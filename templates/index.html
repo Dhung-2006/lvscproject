@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../staic/style.css">
+</head>
+
+<body>
+    <section>
+        <form id="fileForm" class="container" method="POST">
+            <a href="./pdfAPI" download="template"><button type="button" id="download"><i class="fa-solid fa-file"></i>
+                    下載範本</button></a>
+            <label for="upload_file" id="cc"><i class="fa-solid fa-upload"></i> 上傳資料</label>
+            <input type="file" id="upload_file" name="post_file" style="display: none;">
+            <button type="submit" id="process"><i class="fa-solid fa-gears"></i> 執行</button>
+        </form>
+        <div class="output_pdf">
+            <!-- <iframe src="../pdfs/final.pdf" frameborder="0"></iframe> -->
+        </div>
+    </section>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const download = document.querySelector("#download");
+            // const upload = document.querySelector("#upload_file");
+            const upload = document.querySelector("#cc");
+            const process = document.querySelector("#process");
+            const fileform = document.querySelector("#fileForm");
+            const output = document.querySelector(".output_pdf");
+            const URL = "http://127.0.0.1:5000/testAPI";
+            // upload 
+            // upload.addEventListener('click',()=>{
+            //     let promise = fetch(url).then((res)=>{console.log(res)}).catch((err)=>{alert("error")});
+            // })
+
+            fileform.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const getForm = new FormData(fileform);
+                fetch('/submit', {
+                    method: "POST",
+                    body: getForm
+                })
+                .then(res => { output.innerHTML = res })
+                .catch(err => { console.error(err) });
+            })
+
+            // if .exe has done 
+
+
+            upload.addEventListener('click', () => {
+                getData(URL);
+                // document.body.append()
+            })
+            const getData = async (URL) => {
+                let waitData = await fetch(URL);
+                // let JSON = await waitData.json();
+                console.log(waitData)
+                const iframe = document.createElement("embed");
+                console.log(JSON.datas[3].fileName);
+                iframe.src = JSON.datas[3].fileName;
+                // const aHref = document.createElement("a");
+                // aHref.href = 
+                output.appendChild(iframe)
+                // output.src = await `<iframe src="${JSON.datas[3].fileName}"></iframe>`;
+                // output.write(`"<iframe src="${JSON.datas[3].fileName}"></iframe>"`);
+                // console.log(JSON.datas[3].fileName);
+                // await insertFrame(JSON.datas[3].fileName);
+            }
+
+        })
+
+        //     const getData = async (URL) => {
+        //         let waitData = await fetch(URL);
+        //         let JSON = await waitData.json();
+        //         const iframe = document.createElement("embed");
+        //         // const aHref = document.createElement("a");
+        //         // console.log(JSON.datas[3].fileName);
+        //         // aHref.href =
+        //         iframe.src = JSON.datas[3].fileName;
+        //         output.appendChild(iframe)
+        //         //  output.src = await `<iframe src="${JSON.datas[3].fileName}"></iframe>`;
+        //         // output.write(`"<iframe src="${JSON.datas[3].fileName}"></iframe>"`);
+        //         // console.log(JSON.datas[3].fileName);
+        //         // await insertFrame(JSON.datas[3].fileName);
+        //     }
+
+        // })
+    </script>
+
+</body>
+
+
+</html>

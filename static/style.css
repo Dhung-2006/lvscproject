@@ -1,0 +1,49 @@
+* {
+    padding: 0%;
+    margin: 0%;
+}
+
+embed {
+    width: 25rem;
+    aspect-ratio: 1/1.5;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 20vh;
+    /* margin: 5rem 0; */
+}
+
+label,
+button {
+    background-color: #7E5FEC;
+    font-size: 1.25rem;
+    padding: 0.5rem 1rem;
+    margin: 0 2rem;
+    border: none;
+    border-radius: 0.9rem;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 5px 15px 0px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .3s;
+}
+
+label:hover,
+button:hover {
+    background-color: white;
+    color: #7E5FEC;
+    opacity: 0.8;
+    scale: 0.92;
+}
+
+.output_pdf {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 80vh;
+}

@@ -1,4 +1,5 @@
 from django.shortcuts import render
 
 # Create your views here.
-print('123')
+def index(request):
+    return render(request, "index.html", locals())
