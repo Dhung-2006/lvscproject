@@ -13,7 +13,8 @@
 
 <body>
     <section>
-        <form id="fileForm" class="container" method="POST">
+        <form id="fileForm" class="container" method="POST"action="{% url "run_convert" %}" enctype="multipart/form-data">
+            {% csrf_token %}
             <a href="./pdfAPI" download="template"><button type="button" id="download"><i class="fa-solid fa-file"></i>
                     下載範本</button></a>
             <label for="upload_file" id="cc"><i class="fa-solid fa-upload"></i> 上傳資料</label>
