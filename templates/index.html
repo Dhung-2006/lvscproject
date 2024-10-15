@@ -17,7 +17,7 @@
             <a href="./pdfAPI" download="template"><button type="button" id="download"><i class="fa-solid fa-file"></i>
                     下載範本</button></a>
             <label for="upload_file" id="cc"><i class="fa-solid fa-upload"></i> 上傳資料</label>
-            <input type="file" id="upload_file" name="post_file" style="display: none;">
+            <input type="file" id="upload_file" name="post_file" style="display: none;" webkitdirectory multiple>  <!--   -->
             <button type="submit" id="process"><i class="fa-solid fa-gears"></i> 執行</button>
         </form>
         <div class="output_pdf">
@@ -35,6 +35,9 @@
             const fileform = document.querySelector("#fileForm");
             const output = document.querySelector(".output_pdf");
             const URL = "http://127.0.0.1:5000/testAPI";
+            let status = false;
+
+
             // upload 
             // upload.addEventListener('click',()=>{
             //     let promise = fetch(url).then((res)=>{console.log(res)}).catch((err)=>{alert("error")});
@@ -74,24 +77,15 @@
                 // await insertFrame(JSON.datas[3].fileName);
             }
 
+            const whileCheck = () =>{
+                if(status){
+                    
+                }
+            }
+
         })
 
-        //     const getData = async (URL) => {
-        //         let waitData = await fetch(URL);
-        //         let JSON = await waitData.json();
-        //         const iframe = document.createElement("embed");
-        //         // const aHref = document.createElement("a");
-        //         // console.log(JSON.datas[3].fileName);
-        //         // aHref.href =
-        //         iframe.src = JSON.datas[3].fileName;
-        //         output.appendChild(iframe)
-        //         //  output.src = await `<iframe src="${JSON.datas[3].fileName}"></iframe>`;
-        //         // output.write(`"<iframe src="${JSON.datas[3].fileName}"></iframe>"`);
-        //         // console.log(JSON.datas[3].fileName);
-        //         // await insertFrame(JSON.datas[3].fileName);
-        //     }
 
-        // })
     </script>
 
 </body>
