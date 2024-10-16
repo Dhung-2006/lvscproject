@@ -11,6 +11,7 @@ from docx.oxml import OxmlElement
 from docx.shared import Pt
 from docx.shared import Cm
 from docx2pdf import convert
+from pypdf import PdfWriter
 def Cov():    
     worddic={'身分證號碼':'身分證號',
             '中文姓名':'姓名',
@@ -26,48 +27,48 @@ def Cov():
             '上課別':'部別'
             }
     #讀取主要資料
-    df = pd.read_excel('1.中壢高商(14901).xlsx', sheet_name='Data-全測',skiprows=2)
+    df = pd.read_excel('./excel_to_word/1.中壢高商(14901).xlsx', sheet_name='Data-全測',skiprows=2)
     rows = df.shape[0]
     #--------------------------------------------------------------------------------
     #讀取&儲存科系資料
-    dfs = pd.read_excel('1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[0])
+    dfs = pd.read_excel('./excel_to_word/1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[0])
     text_values = dfs.values
     is_string =np.vectorize(lambda x: isinstance(x, str))(text_values).astype(bool)
     only_string = text_values[is_string]
     subject = np.insert(only_string,0,0)
     #---------------------------------------------------------------------------------
     #讀取&儲存班級資料
-    dfc  = pd.read_excel('1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[3])
+    dfc  = pd.read_excel('./excel_to_word/1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[3])
     text_values = dfc.values
     is_string =np.vectorize(lambda x: isinstance(x, str))(text_values).astype(bool)
     only_string = text_values[is_string]
     Class = np.insert(only_string,0,0)
     #---------------------------------------------------------------------------------
     #報檢學校編號與代碼
-    dfsc = pd.read_excel('1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[7,8,9], index_col=0,nrows = 17)
+    dfsc = pd.read_excel('./excel_to_word/1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[7,8,9], index_col=0,nrows = 17)
     #---------------------------------------------------------------------------------
     #學制
-    dfstu  = pd.read_excel('1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[18],nrows = 4)
+    dfstu  = pd.read_excel('./excel_to_word/1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[18],nrows = 4)
     text_values = dfstu.values
     is_string =np.vectorize(lambda x: isinstance(x, str))(text_values).astype(bool)
     only_string = text_values[is_string]
     stu = np.insert(only_string,0,0)
     #---------------------------------------------------------------------------------
     #特定對象
-    dfsg = pd.read_excel('1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[20,21],index_col=0, nrows = 8)
+    dfsg = pd.read_excel('./excel_to_word/1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[20,21],index_col=0, nrows = 8)
     #---------------------------------------------------------------------------------
     #測驗類別
-    dftp = pd.read_excel('1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[14,15],index_col=0, nrows = 13 )
+    dftp = pd.read_excel('./excel_to_word/1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[14,15],index_col=0, nrows = 13 )
     text_values = dftp.values
     is_string =np.vectorize(lambda x: isinstance(x, str))(text_values).astype(bool)
     only_string = text_values[is_string]
     test_type_lst = np.insert(only_string,0,0)
     #---------------------------------------------------------------------------------
     #套印用資料-全測
-    df_print = pd.read_excel('1.中壢高商(14901).xlsx', sheet_name='套印用資料-全測')
+    df_print = pd.read_excel('./excel_to_word/1.中壢高商(14901).xlsx', sheet_name='套印用資料-全測')
     #---------------------------------------------------------------------------------
     #讀取學制
-    df_study_type = pd.read_excel('1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[11,12],index_col=0, nrows = 11)
+    df_study_type = pd.read_excel('./excel_to_word/1.中壢高商(14901).xlsx',sheet_name='代號',usecols=[11,12],index_col=0, nrows = 11)
     text_values = df_study_type.values
     is_string =np.vectorize(lambda x: isinstance(x, str))(text_values).astype(bool)
     only_string = text_values[is_string]
@@ -75,10 +76,10 @@ def Cov():
     #---------------------------------------------------------------------------------
     #word讀取 & 填寫
     file_lst = []
-
+    merger = PdfWriter()
     for i in range(0,rows):
         school_id  ='0'+str(df_print.loc[i,'學號'])
-        doc = Document('5.報名表正面.docx')
+        doc = Document('./excel_to_word/5.報名表正面.docx')
         table =doc.tables[0]
         nowcommend = ''
         testset = set()
@@ -304,7 +305,7 @@ def Cov():
                             paragraph = cell.paragraphs[0]
                             paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
                             run = paragraph.add_run()
-                            path =f"C:/Users/User/Desktop/壢商專案/相片_學號/{class_id}.jpg" 
+                            path =f"./excel_to_word/相片_學號/{class_id}.jpg" 
                             run.add_picture(path)
                         elif   '檢定區別' in nowcommend:
                             test_type = test_type_lst[int(df_print.loc[i,'測驗類別'])]
@@ -388,5 +389,8 @@ def Cov():
                         except:
                             break
         new_file_path = school_id+'.docx'
-        doc.save('./alreadyPDF/'+new_file_path) 
-        convert('./alreadyPDF/'+new_file_path)
+        doc.save('./excel_to_word/alreadyPDF/'+new_file_path) 
+        convert('./excel_to_word/alreadyPDF/'+new_file_path)
+        merger.append('./excel_to_word/./alreadyPDF/'+school_id+'.pdf')
+    merger.write("./excel_to_word/alreadyPDF/result.pdf")
+    merger.close()
