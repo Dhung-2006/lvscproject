@@ -21,5 +21,5 @@ from myapp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index),
-    path("run_convert/", views.runConvert, name="run_convert"),
+    path("run_convert", views.runConvert, name="run_convert"),
 ]

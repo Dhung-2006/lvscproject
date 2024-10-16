@@ -44,7 +44,7 @@
             fileform.addEventListener('submit', (event) => {
                 event.preventDefault();
                 const getForm = new FormData(fileform);
-                fetch('/submit', {
+                fetch('/run_convert', {
                     method: "POST",
                     body: getForm
                 })
