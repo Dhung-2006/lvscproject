@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index),
     path("run_convert", views.runConvert, name="run_convert"),
-    path("return_file",views.return_file,name="return_file")
+    path("return_file",views.return_file,name="return_file"),
+    path("templates",views.templates,name="templates")
 ]

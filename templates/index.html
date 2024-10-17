@@ -17,7 +17,7 @@
         <form id="fileForm" class="container" method="POST" action="{% url 'run_convert' %}"
             enctype="multipart/form-data">
             {% csrf_token %}
-            <a href="./pdfAPI" download="template"><button type="button" id="download"><i class="fa-solid fa-file"></i>
+            <a href="/templates" download="template"><button type="button" id="download"><i class="fa-solid fa-file"></i>
                     下載範本</button></a>
             <label for="upload_file" id="cc"><i class="fa-solid fa-upload"></i> 上傳資料</label>
             <input type="file" id="upload_file" name="post_file" style="display: none;" webkitdirectory multiple>
@@ -40,14 +40,12 @@
             const fileform = document.querySelector("#fileForm");
             const output = document.querySelector(".output_pdf");
             const pdfFrame = document.querySelector("#pdfFrame");
-            const URL = "http://127.0.0.1:8000/return_file";
+            const URL = "http://127.0.0.1:8000/run_convert";
             let status = " {{ State }} ";
 
-            // upload 
-            // upload.addEventListener('click',()=>{
-            //     let promise = fetch(url).then((res)=>{console.log(res)}).catch((err)=>{alert("error")});
-            // })
 
+
+            // execute part //
             fileform.addEventListener('submit', (event) => {
                 event.preventDefault();
                 // process.disabled = true;
@@ -57,9 +55,8 @@
                     body: getForm
                 })
                     .then(res => {
-                        console.log(res)
                         if (!res.ok) {
-                            throw new Error("媽的又跳");
+                            console.log(res)
                         }
                         // return res.json()
                     })
