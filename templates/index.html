@@ -25,7 +25,8 @@
             <button type="submit" id="process"><i class="fa-solid fa-gears"></i> 執行</button>
         </form>
         <div class="output_pdf">
-            <!-- <iframe src="../pdfs/final.pdf" frameborder="0"></iframe> -->
+            <iframe frameborder="0" id="pdfFrame" style="width: 25rem;
+    aspect-ratio: 1/1.5;"></iframe>
         </div>
     </section>
 
@@ -38,7 +39,8 @@
             const process = document.querySelector("#process");
             const fileform = document.querySelector("#fileForm");
             const output = document.querySelector(".output_pdf");
-            const URL = "http://127.0.0.1:5000/testAPI";
+            const pdfFrame = document.querySelector("#pdfFrame");
+            const URL = "http://127.0.0.1:8000/return_file";
             let status = " {{ State }} ";
 
             // upload 
@@ -50,41 +52,28 @@
                 event.preventDefault();
                 // process.disabled = true;
                 const getForm = new FormData(fileform);
-                fetch('/run_convert', {
+                fetch(URL, {
                     method: "POST",
                     body: getForm
                 })
-                .then(res => { output.innerHTML = res })
-                .catch(err => { console.error(err) });
-                getData();
+                    .then(res => {
+                        console.log(res)
+                        if (!res.ok) {
+                            throw new Error("媽的又跳");
+                        }
+                        // return res.json()
+                    })
+                    .then(data => {
+                        console.log(data)
+                        getData(data);
+                    })
+                    .catch(err => { console.error(err) });
+                // .then(res => { output.innerHTML = res })
             })
 
-            // if .exe has done 
-
-
-            // upload.addEventListener('click', () => {
-            //     getData(URL);
-            //     // document.body.append()
-            // })   
-
-            const getData = async () => {
-                const waitData = await fetch("/run_convert");
-                const Datajson = await waitData.json();
-                if (boolean == true) {
-                    const iframe = document.createElement("embed");
-                    const route = Datajson['route'];
-                    const link = document.createElement("a");
-                    iframe.src = route;
-                    link.src = route;
-                    link.appendChild(iframe);
-                    output.appendChild(iframe);
-                }
-                // const aHref = document.createElement("a");
-                // aHref.href = 
-                // output.src = await `<iframe src="${JSON.datas[3].fileName}"></iframe>`;
-                // output.write(`"<iframe src="${JSON.datas[3].fileName}"></iframe>"`);
-                // console.log(JSON.datas[3].fileName);
-                // await insertFrame(JSON.datas[3].fileName);
+            const getData = (route) => {
+                const file_route = "http://127.0.0.1:8000/return_file";
+                pdfFrame.src = file_route;
             }
 
 
