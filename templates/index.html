@@ -17,7 +17,8 @@
         <form id="fileForm" class="container" method="POST" action="{% url 'run_convert' %}"
             enctype="multipart/form-data">
             {% csrf_token %}
-            <a href="/templates" download="template"><button type="button" id="download"><i class="fa-solid fa-file"></i>
+            <a href="/templates" download="template"><button type="button" id="download"><i
+                        class="fa-solid fa-file"></i>
                     下載範本</button></a>
             <label for="upload_file" id="cc"><i class="fa-solid fa-upload"></i> 上傳資料</label>
             <input type="file" id="upload_file" name="post_file" style="display: none;" webkitdirectory multiple>
@@ -25,8 +26,9 @@
             <button type="submit" id="process"><i class="fa-solid fa-gears"></i> 執行</button>
         </form>
         <div class="output_pdf">
-            <iframe frameborder="0" id="pdfFrame" style="width: 25rem;
-    aspect-ratio: 1/1.5;"></iframe>
+            <div class="loader"></div>
+            <h1 class="alertText">請上傳資料夾</h1>
+            <iframe frameborder="0" id="pdfFrame" ></iframe>
         </div>
     </section>
 
@@ -40,16 +42,20 @@
             const fileform = document.querySelector("#fileForm");
             const output = document.querySelector(".output_pdf");
             const pdfFrame = document.querySelector("#pdfFrame");
+            const alertText = document.querySelector(".alertText");
+            const loader = document.querySelector(".loader");
             const URL = "http://127.0.0.1:8000/run_convert";
-            let status = " {{ State }} ";
-
-
+            let status = 0;
+            // 0 無資料夾 
+            // 1 loading 
+            // 2 done
 
             // execute part //
             fileform.addEventListener('submit', (event) => {
                 event.preventDefault();
                 // process.disabled = true;
                 const getForm = new FormData(fileform);
+                StateAction(1);
                 fetch(URL, {
                     method: "POST",
                     body: getForm
@@ -62,6 +68,7 @@
                     })
                     .then(data => {
                         console.log(data)
+                        StateAction(2);
                         getData(data);
                     })
                     .catch(err => { console.error(err) });
@@ -71,6 +78,20 @@
             const getData = (route) => {
                 const file_route = "http://127.0.0.1:8000/return_file";
                 pdfFrame.src = file_route;
+            }
+
+            const StateAction = (state) => {
+                switch (state) {
+                    case 0:
+                        break;
+                    case 1:
+                        alertText.style.opacity = 0;
+                        loader.style.opacity = 1;
+                        break;
+                    case 2:
+                        loader.style.opacity = 0;
+                        break;
+                }
             }
 
 
