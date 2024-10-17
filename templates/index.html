@@ -17,7 +17,8 @@
         <form id="fileForm" class="container" method="POST" action="{% url 'run_convert' %}"
             enctype="multipart/form-data">
             {% csrf_token %}
-            <a href="./pdfAPI" download="template"><button type="button" id="download"><i class="fa-solid fa-file"></i>
+            <a href="/templates" download="template"><button type="button" id="download"><i
+                        class="fa-solid fa-file"></i>
                     下載範本</button></a>
             <label for="upload_file" id="cc"><i class="fa-solid fa-upload"></i> 上傳資料</label>
             <input type="file" id="upload_file" name="post_file" style="display: none;" webkitdirectory multiple>
@@ -25,7 +26,9 @@
             <button type="submit" id="process"><i class="fa-solid fa-gears"></i> 執行</button>
         </form>
         <div class="output_pdf">
-            <!-- <iframe src="../pdfs/final.pdf" frameborder="0"></iframe> -->
+            <div class="loader"></div>
+            <h1 class="alertText">請上傳資料夾</h1>
+            <iframe frameborder="0" id="pdfFrame" ></iframe>
         </div>
     </section>
 
@@ -38,62 +41,60 @@
             const process = document.querySelector("#process");
             const fileform = document.querySelector("#fileForm");
             const output = document.querySelector(".output_pdf");
-            const URL = "http://127.0.0.1:5000/testAPI";
-            let status = " {{ State }} ";
+            const pdfFrame = document.querySelector("#pdfFrame");
+            const alertText = document.querySelector(".alertText");
+            const loader = document.querySelector(".loader");
+            const URL = "http://127.0.0.1:8000/run_convert";
+            let status = 0;
+            // 0 無資料夾 
+            // 1 loading 
+            // 2 done
 
-            // upload 
-            // upload.addEventListener('click',()=>{
-            //     let promise = fetch(url).then((res)=>{console.log(res)}).catch((err)=>{alert("error")});
-            // })
-
+            // execute part //
             fileform.addEventListener('submit', (event) => {
                 event.preventDefault();
                 // process.disabled = true;
                 const getForm = new FormData(fileform);
-                fetch('/run_convert', {
+                StateAction(1);
+                fetch(URL, {
                     method: "POST",
                     body: getForm
                 })
-                    .then(res => { output.innerHTML = res })
+                    .then(res => {
+                        if (!res.ok) {
+                            console.log(res)
+                        }
+                        // return res.json()
+                    })
+                    .then(data => {
+                        console.log(data)
+                        StateAction(2);
+                        getData(data);
+                    })
                     .catch(err => { console.error(err) });
-                whileCheck()
+                // .then(res => { output.innerHTML = res })
             })
 
-            // if .exe has done 
-
-
-            // upload.addEventListener('click', () => {
-            //     getData(URL);
-            //     // document.body.append()
-            // })   
-
-            const getData = async (URL) => {
-                let waitData = await fetch(URL);
-                // let JSON = await waitData.json();
-                console.log(waitData)
-                const iframe = document.createElement("embed");
-                console.log(JSON.datas[3].fileName);
-                iframe.src = JSON.datas[3].fileName;
-                // const aHref = document.createElement("a");
-                // aHref.href = 
-                output.appendChild(iframe)
-                // output.src = await `<iframe src="${JSON.datas[3].fileName}"></iframe>`;
-                // output.write(`"<iframe src="${JSON.datas[3].fileName}"></iframe>"`);
-                // console.log(JSON.datas[3].fileName);
-                // await insertFrame(JSON.datas[3].fileName);
+            const getData = (route) => {
+                const file_route = "http://127.0.0.1:8000/return_file";
+                pdfFrame.src = file_route;
             }
 
-            const whileCheck = () => {
-                while (true) {
-                    console.log(status)
-                    if (status == true) {
-                        console.log("1")
-                    }
-                    else {
-                        console.log("0")
-                    }
+            const StateAction = (state) => {
+                switch (state) {
+                    case 0:
+                        break;
+                    case 1:
+                        alertText.style.opacity = 0;
+                        loader.style.opacity = 1;
+                        break;
+                    case 2:
+                        loader.style.opacity = 0;
+                        break;
                 }
             }
+
+
 
         })
 
