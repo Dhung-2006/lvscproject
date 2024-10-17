@@ -54,9 +54,9 @@
                     method: "POST",
                     body: getForm
                 })
-                    .then(res => { output.innerHTML = res })
-                    .catch(err => { console.error(err) });
-                whileCheck()
+                .then(res => { output.innerHTML = res })
+                .catch(err => { console.error(err) });
+                getData();
             })
 
             // if .exe has done 
@@ -67,33 +67,27 @@
             //     // document.body.append()
             // })   
 
-            const getData = async (URL) => {
-                let waitData = await fetch(URL);
-                // let JSON = await waitData.json();
-                console.log(waitData)
-                const iframe = document.createElement("embed");
-                console.log(JSON.datas[3].fileName);
-                iframe.src = JSON.datas[3].fileName;
+            const getData = async () => {
+                const waitData = await fetch("/run_convert");
+                const Datajson = await waitData.json();
+                if (boolean == true) {
+                    const iframe = document.createElement("embed");
+                    const route = Datajson['route'];
+                    const link = document.createElement("a");
+                    iframe.src = route;
+                    link.src = route;
+                    link.appendChild(iframe);
+                    output.appendChild(iframe);
+                }
                 // const aHref = document.createElement("a");
                 // aHref.href = 
-                output.appendChild(iframe)
                 // output.src = await `<iframe src="${JSON.datas[3].fileName}"></iframe>`;
                 // output.write(`"<iframe src="${JSON.datas[3].fileName}"></iframe>"`);
                 // console.log(JSON.datas[3].fileName);
                 // await insertFrame(JSON.datas[3].fileName);
             }
 
-            const whileCheck = () => {
-                while (true) {
-                    console.log(status)
-                    if (status == true) {
-                        console.log("1")
-                    }
-                    else {
-                        console.log("0")
-                    }
-                }
-            }
+
 
         })
 

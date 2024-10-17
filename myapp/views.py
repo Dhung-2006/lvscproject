@@ -7,9 +7,9 @@ def runConvert(request):
     if request.method == "POST":
         # main.Cov()
         context = {
-        'State': "1",
+        "route":"result.pdf"
         }
-        render(request, 'index.html', context)
-        return HttpResponse("Done Process", status=200)
+        return render(request, 'index.html', context)
+        # return HttpResponse("Done Process", status=200)
     else:
         return HttpResponse("Invalid request", status=400)
