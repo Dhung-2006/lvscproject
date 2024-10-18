@@ -14,10 +14,15 @@ from docx2pdf import convert
 from pypdf import PdfWriter
 import glob
 def Cov():    
+    #偵測資料夾xlsx檔案
     excel_files = glob.glob("./excel_to_word/processingData/*.xlsx")
     excel_file = excel_files[0]
+    #--------------------------------------------------------------------------------
+    #偵測資料夾word檔案
     word_files = glob.glob("./excel_to_word/processingData/*.docx")
     word_file = word_files[0]
+    #--------------------------------------------------------------------------------
+    #為於word & excel 之標題欄位不同處建立dict
     worddic={'身分證號碼':'身分證號',
             '中文姓名':'姓名',
             '出生日期':'出生日期',
@@ -38,6 +43,7 @@ def Cov():
     #讀取&儲存科系資料
     dfs = pd.read_excel(excel_file,sheet_name='代號',usecols=[0])
     text_values = dfs.values
+    # 將科系資料加入list
     is_string =np.vectorize(lambda x: isinstance(x, str))(text_values).astype(bool)
     only_string = text_values[is_string]
     subject = np.insert(only_string,0,0)
@@ -45,6 +51,7 @@ def Cov():
     #讀取&儲存班級資料
     dfc  = pd.read_excel(excel_file,sheet_name='代號',usecols=[3])
     text_values = dfc.values
+    # 將班級資料加入list
     is_string =np.vectorize(lambda x: isinstance(x, str))(text_values).astype(bool)
     only_string = text_values[is_string]
     Class = np.insert(only_string,0,0)
@@ -55,6 +62,7 @@ def Cov():
     #學制
     dfstu  = pd.read_excel(excel_file,sheet_name='代號',usecols=[18],nrows = 4)
     text_values = dfstu.values
+    # 將學制加入lish
     is_string =np.vectorize(lambda x: isinstance(x, str))(text_values).astype(bool)
     only_string = text_values[is_string]
     stu = np.insert(only_string,0,0)
@@ -65,6 +73,7 @@ def Cov():
     #測驗類別
     dftp = pd.read_excel(excel_file,sheet_name='代號',usecols=[14,15],index_col=0, nrows = 13 )
     text_values = dftp.values
+    #將測驗類別加入list
     is_string =np.vectorize(lambda x: isinstance(x, str))(text_values).astype(bool)
     only_string = text_values[is_string]
     test_type_lst = np.insert(only_string,0,0)
@@ -75,43 +84,45 @@ def Cov():
     #讀取學制
     df_study_type = pd.read_excel(excel_file,sheet_name='代號',usecols=[11,12],index_col=0, nrows = 11)
     text_values = df_study_type.values
+    # 將學制加入list
     is_string =np.vectorize(lambda x: isinstance(x, str))(text_values).astype(bool)
     only_string = text_values[is_string]
     study_type_list = np.insert(only_string,0,0)
     #---------------------------------------------------------------------------------
     #word讀取 & 填寫
-    file_lst = []
-    merger = PdfWriter()
+    merger = PdfWriter()  #建立pdf讀寫器
+    #讀取每一行的excel主資料
     for i in range(0,rows):
         school_id  ='0'+str(df_print.loc[i,'學號'])
         doc = Document(word_file)
-        table =doc.tables[0]
-        nowcommend = ''
-        testset = set()
+        table =doc.tables[0]     #選定word中第一個表格
+        nowcommend = ''   #判斷正在閱讀的儲存格
+        testset = set()   #判斷有沒有重複閱讀或輸入的儲存格
+        #讀取 行&列
         for idxr,row in enumerate(table.rows) :
             for idxc, cell in enumerate(row.cells) :
-                if cell.text != '':
-                    if cell.text not in testset :
+                if cell.text != '':   #該儲存格是否有資料
+                    if cell.text not in testset :   #判斷該儲存格是否有重複輸入
+                        #填入英文姓名欄位
                         if nowcommend=='英文姓名':
                             if cell.text not in testset:
                                 care = cell.text
-                                paragraph = cell.paragraphs[0]
-                                paragraph_format = paragraph.paragraph_format
-                                paragraph_format.line_spacing = Pt(12)
-                                for run in paragraph.runs:
+                                paragraph = cell.paragraphs[0]      #為該儲存格 新增段落
+                                paragraph_format = paragraph.paragraph_format #為該儲存格新增文件格式
+                                paragraph_format.line_spacing = Pt(12)   #設定儲存格的行距
+                                for run in paragraph.runs:      
                                     run.clear()
-                                #---------------------------------------------------------------------------------
-                                run2 = paragraph.add_run(df.loc[i, worddic[nowcommend]])  
-                                run2.font.size = Pt(12)  # 設置字體大小 
-                                run2.font.name = 'Times New Roman'
+                                run2 = paragraph.add_run(df.loc[i, worddic[nowcommend]])  #在段落中新增內容
+                                run2.font.size = Pt(12)          # 設置字體大小 
+                                run2.font.name = 'Times New Roman'      #設置英文字型
                                 run2._element.rPr.rFonts.set(qn('w:eastAsia'), 'Times New Roman')
-                                #---------------------------------------------------------------------------------
-                                run1 = paragraph.add_run(care)  
+                                run1 = paragraph.add_run(care)     #新增第二段文字
                                 run1.font.size = Pt(6)
-                                run1.font.name = '標楷體'
+                                run1.font.name = '標楷體'#設置中文字型
                                 run1.font.bold = True
                                 run1._element.rPr.rFonts.set(qn('w:eastAsia'), '標楷體')
                                 testset.add(df.loc[i,worddic[nowcommend]] +care)
+                        #--------------------------------------------------------------------------------
                         elif nowcommend == '聯絡電話':
                             if cell.text not in testset:
                                 homnnum,clphone = cell.text.split('\n')
