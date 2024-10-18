@@ -7,7 +7,7 @@ import os
 def index(request):
     return render(request, "index.html", locals())
 def templates(request):
-    file_path  = './convertTemplate.zip'
+    file_path  = './convertTemplate.7z'
     if os.path.exists(file_path):
         response = FileResponse(open(file_path, 'rb'), as_attachment=False)
         response['Content-Type'] = 'application/zip'
