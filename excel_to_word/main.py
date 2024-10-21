@@ -13,13 +13,14 @@ from docx.shared import Cm
 from docx2pdf import convert
 from pypdf import PdfWriter
 import glob
+import os
 def Cov():    
     #偵測資料夾xlsx檔案
     excel_files = glob.glob("./excel_to_word/processingData/*.xlsx")
     excel_file = excel_files[0]
     #--------------------------------------------------------------------------------
     #偵測資料夾word檔案
-    word_files = glob.glob("./excel_to_word/processingData/*.docx")
+    word_files = glob.glob("./excel_to_word/processingData/5.報名表正面.docx")
     word_file = word_files[0]
     #--------------------------------------------------------------------------------
     #為於word & excel 之標題欄位不同處建立dict
@@ -321,7 +322,7 @@ def Cov():
                             paragraph = cell.paragraphs[0]
                             paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
                             run = paragraph.add_run()
-                            path =f"./excel_to_word/processingData/相片_學號/{class_id}.jpg" 
+                            path =f"./excel_to_word/processingData/{class_id}.jpg" 
                             run.add_picture(path)
                         elif   '檢定區別' in nowcommend:
                             test_type = test_type_lst[int(df_print.loc[i,'測驗類別'])]
@@ -410,3 +411,11 @@ def Cov():
         merger.append('./excel_to_word/./alreadyPDF/'+school_id+'.pdf')
     merger.write("./excel_to_word/alreadyPDF/result.pdf")
     merger.close()
+    files = glob.glob('./excel_to_word/processingData/*.*')
+    for file in files:
+        os.remove(file)
+    files = glob.glob('./excel_to_word/alreadyPDF/*.*')
+    for file in files:
+        if  'result.pdf' in file:
+            continue
+        os.remove(file)

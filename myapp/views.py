@@ -26,8 +26,12 @@ def return_file(request):
 def runConvert(request):
     # print(request)
     if request.method == "POST":
+        files = request.FILES.getlist('post_file')  # 獲取多個檔案
+        for file in files:
+            with open(f'./excel_to_word/processingData/{file.name}', 'wb+') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
         main.Cov()
-        # print("main.cov")
         return_file(request)
         return HttpResponse('return correct',status = 200)
     else:
