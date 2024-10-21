@@ -30,6 +30,7 @@
             <h1 class="alertText">請上傳資料夾</h1>
             <iframe frameborder="0" id="pdfFrame"></iframe>
         </div>
+
     </section>
 
 
@@ -49,19 +50,36 @@
             // 1 loading 
             // 2 done
 
+
+            // upload part //
+            upload.addEventListener("click",(event)=>{
+                if(pdfFrame.src != ""){
+                    const bool = confirm('你確定要上傳資料夾嗎 (一但確認先前的資料夾不會復原！)');
+                    if(!bool){
+                        event.preventDefault();
+                    }
+                    else{
+                        pdfFrame.src = "";
+                    }
+                }
+            })
+
             // execute part //
             fileform.addEventListener('submit', (event) => {
+                pdfFrame.src = "";
                 event.preventDefault();
                 const getForm = new FormData(fileform);
                 const file = upload.files;
                 for (let i = 0; i < file.length; i++) {
                     getForm.append("file", file);
                 }
-                for (let pair of getForm.entries()) {
-                    console.log(`${pair[0]}:`, pair[1]);
-                }
+                // for (let pair of getForm.entries()) {
+                //     console.log(`${pair[0]}:`, pair[1]);
+                // }
                 // console.log(upload.files)
-                console.log(getForm);
+                console.log("getForm", getForm);
+                console.log("file", file);
+                // console.log("filewebkitRelativePath", file[0].webkitRelativePath);
                 if (file.length > 0) {
                     StateAction(1);
                     fetch(URL, {
@@ -70,12 +88,12 @@
                     })
                         .then(res => {
                             if (!res.ok) {
-                                console.log(res);
+                                console.log('res', res);
                             }
                             // return res.json()
                         })
                         .then(data => {
-                            console.log(data)
+                            console.log("data", data)
                             StateAction(2);
                             getData(data);
                         })
@@ -89,7 +107,15 @@
             })
             const getData = (route) => {
                 const file_route = "http://127.0.0.1:8000/return_file";
-                pdfFrame.src = file_route;
+                fetch(file_route)
+                    .then(res => {
+                        if (!res.ok) {
+                            alert("請上傳正確的資料夾(檔案)")
+                        }
+                        else {
+                            pdfFrame.src = file_route;
+                        }
+                    })
             }
 
             const StateAction = (state) => {

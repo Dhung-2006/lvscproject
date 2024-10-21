@@ -3,9 +3,14 @@ from excel_to_word import main
 from django.http import HttpResponse
 from django.http import JsonResponse 
 from django.http import FileResponse
+from django.contrib import messages
+from django.shortcuts import redirect
+import glob
 import os 
 def index(request):
     return render(request, "index.html", locals())
+
+
 def templates(request):
     file_path  = './convertTemplate.7z'
     if os.path.exists(file_path):
@@ -24,18 +29,31 @@ def return_file(request):
         return HttpResponse("File not found.", status=404)
     # return HttpResponse('return correct',status = 200)
 def runConvert(request):
-    # print(request)
     if request.method == "POST":
+        print('ts')
         files = request.FILES.getlist('post_file')  # 獲取多個檔案
         for file in files:
             with open(f'./excel_to_word/processingData/{file.name}', 'wb+') as destination:
                 for chunk in file.chunks():
                     destination.write(chunk)
-        main.Cov()
-        return_file(request)
+        a = main.Cov()
+        print(a)
+        if a :
+            return_file(request)
+        else:
+            try:
+                os.remove('./excel_to_word/alreadyPDF/result.pdf')
+                
+                files = glob.glob('./excel_to_word/processingData/*.*')
+                for file in files:
+                    os.remove(file)
+            except:
+                print('allen huang is stupid')
+                files = glob.glob('./excel_to_word/processingData/*.*')
+                for file in files:
+                    os.remove(file)
         return HttpResponse('return correct',status = 200)
     else:
-        print("fk this")
         return HttpResponse("Invalid request", status=405)
     
 
