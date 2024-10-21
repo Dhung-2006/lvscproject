@@ -37,7 +37,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             const download = document.querySelector("#download");
             const upload = document.querySelector("#upload_file");
-            // const upload = document.querySelector("#cc");
             const process = document.querySelector("#process");
             const fileform = document.querySelector("#fileForm");
             const output = document.querySelector(".output_pdf");
@@ -55,10 +54,15 @@
                 event.preventDefault();
                 const getForm = new FormData(fileform);
                 const file = upload.files;
-                getForm.append("file", file)
-                console.log(upload.files)
-                console.log(FileList.length)
-                if (FileList.length != 0) {
+                for (let i = 0; i < file.length; i++) {
+                    getForm.append("file", file);
+                }
+                for (let pair of getForm.entries()) {
+                    console.log(`${pair[0]}:`, pair[1]);
+                }
+                // console.log(upload.files)
+                console.log(getForm);
+                if (file.length > 0) {
                     StateAction(1);
                     fetch(URL, {
                         method: "POST",
@@ -66,7 +70,7 @@
                     })
                         .then(res => {
                             if (!res.ok) {
-                                console.log(res)
+                                console.log(res);
                             }
                             // return res.json()
                         })
