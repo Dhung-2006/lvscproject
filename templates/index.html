@@ -20,10 +20,33 @@
             <a href="/templates" download="template"><button type="button" id="download"><i
                         class="fa-solid fa-file"></i>
                     下載範本</button></a>
-            <label for="upload_file" id="cc"><i class="fa-solid fa-upload"></i> 上傳資料</label>
-            <input type="file" id="upload_file" name="post_file" style="display: none;" webkitdirectory multiple>
-            <!--   -->
-            <button type="submit" id="process"><i class="fa-solid fa-gears"></i> 執行</button>
+            <!-- <label for="upload_file" id="cc"><i class="fa-solid fa-upload"></i> 上傳資料</label> -->
+            <!-- <input type="file" id="upload_file" name="post_file" style="display: none;" webkitdirectory multiple> -->
+            <button type="button" id="upload_file"><i class="fa-solid fa-upload"></i> 上傳資料</button>
+            <!-- <button type="submit" id="process"><i class="fa-solid fa-gears"></i> 執行</button> -->
+            <!--  -->
+            <div class="modal_update frame_none">
+                <div class="modal_main">
+                    <div class="xhaxha"><i class="fa-solid fa-x"></i></div>
+                    <div class="modal_items">
+                        <label class="modal_item" for="upload_excel">
+                            <div class="icon"><i class="fa-solid fa-file"></i></div>
+                            <h2 class="icon_h2">上傳Excel檔案</h2>
+                            <h3 class="icon_h3">(一個檔案*.xlsx)</h3>
+                            <div class="fill_frame frame_none"><i class="fa-solid fa-file"></i><h3 class="fill_h3"></h3></div>
+                        </label>
+                        <label class="modal_item" for="upload_img">
+                            <div class="icon"><i class="fa-solid fa-image"></i></div>
+                            <h2 class="icon_h2">上傳圖片檔案</h2>
+                            <h3 class="icon_h3">(一個資料夾)</h3>
+                            <div class="fill_frame frame_none"><i class="fa-solid fa-image"></i><h3 class="fill_h3"></h3></div>
+                        </label>
+                        <input type="file" id="upload_excel" name="post_excel" style="display: none;" >
+                        <input type="file" id="upload_img" name="post_img" style="display: none;" webkitdirectory multiple>
+                    </div>
+                    <div class="modal_btn"><button type="submit" id="process" class="modal_update_button">上傳</button></div>
+                </div>
+            </div>
         </form>
         <div class="output_pdf">
             <div class="loader"></div>
@@ -31,113 +54,12 @@
             <iframe frameborder="0" id="pdfFrame"></iframe>
         </div>
 
+        
     </section>
 
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const download = document.querySelector("#download");
-            const upload = document.querySelector("#upload_file");
-            const process = document.querySelector("#process");
-            const fileform = document.querySelector("#fileForm");
-            const output = document.querySelector(".output_pdf");
-            const pdfFrame = document.querySelector("#pdfFrame");
-            const alertText = document.querySelector(".alertText");
-            const loader = document.querySelector(".loader");
-            const URL = "http://127.0.0.1:8000/run_convert";
-            let status = 0;
-            // 0 無資料夾 
-            // 1 loading 
-            // 2 done
-
-
-            // upload part //
-            upload.addEventListener("click",(event)=>{
-                if(pdfFrame.src != ""){
-                    const bool = confirm('你確定要上傳資料夾嗎 (一但確認先前的資料夾不會復原！)');
-                    if(!bool){
-                        event.preventDefault();
-                    }
-                    else{
-                        pdfFrame.src = "";
-                    }
-                }
-            })
-
-            // execute part //
-            fileform.addEventListener('submit', (event) => {
-                pdfFrame.src = "";
-                event.preventDefault();
-                const getForm = new FormData(fileform);
-                const file = upload.files;
-                for (let i = 0; i < file.length; i++) {
-                    getForm.append("file", file);
-                }
-                // for (let pair of getForm.entries()) {
-                //     console.log(`${pair[0]}:`, pair[1]);
-                // }
-                // console.log(upload.files)
-                console.log("getForm", getForm);
-                console.log("file", file);
-                // console.log("filewebkitRelativePath", file[0].webkitRelativePath);
-                if (file.length > 0) {
-                    StateAction(1);
-                    fetch(URL, {
-                        method: "POST",
-                        body: getForm
-                    })
-                        .then(res => {
-                            if (!res.ok) {
-                                console.log('res', res);
-                            }
-                            // return res.json()
-                        })
-                        .then(data => {
-                            console.log("data", data)
-                            StateAction(2);
-                            getData(data);
-                        })
-                        .catch(err => { console.error(err) });
-                }
-                else {
-                    alert("請勿上傳空資料夾")
-                }
-
-                // .then(res => { output.innerHTML = res })
-            })
-            const getData = (route) => {
-                const file_route = "http://127.0.0.1:8000/return_file";
-                fetch(file_route)
-                    .then(res => {
-                        if (!res.ok) {
-                            alert("請上傳正確的資料夾(檔案)")
-                        }
-                        else {
-                            pdfFrame.src = file_route;
-                        }
-                    })
-            }
-
-            const StateAction = (state) => {
-                switch (state) {
-                    case 0:
-                        break;
-                    case 1:
-                        alertText.style.opacity = 0;
-                        loader.style.opacity = 1;
-                        break;
-                    case 2:
-                        loader.style.opacity = 0;
-                        break;
-                }
-            }
-
-
-
-        })
-
-
-    </script>
+    <script src="../static/script.js"></script>
+     
 
 </body>
 

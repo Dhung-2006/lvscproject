@@ -30,9 +30,12 @@ def return_file(request):
     # return HttpResponse('return correct',status = 200)
 def runConvert(request):
     if request.method == "POST":
-        print('ts')
-        files = request.FILES.getlist('post_file')  # 獲取多個檔案
-        for file in files:
+        files_excel = request.FILES.get('ExcelData')
+        with open(f'./excel_to_word/processingData/{files_excel.name}', 'wb+') as destination:
+            for chunk in files_excel.chunks():
+                destination.write(chunk)
+        files_img = request.FILES.getlist('folderFiles[]')
+        for file in files_img:
             with open(f'./excel_to_word/processingData/{file.name}', 'wb+') as destination:
                 for chunk in file.chunks():
                     destination.write(chunk)

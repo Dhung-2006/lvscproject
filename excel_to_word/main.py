@@ -21,7 +21,7 @@ def Cov():
         excel_file = excel_files[0]
         #--------------------------------------------------------------------------------
         #偵測資料夾word檔案
-        word_files = glob.glob("./excel_to_word/processingData/5.報名表正面.docx")
+        word_files = glob.glob("./excel_to_word/5.報名表正面.docx")
         word_file = word_files[0]
         #--------------------------------------------------------------------------------
         #為於word & excel 之標題欄位不同處建立dict
