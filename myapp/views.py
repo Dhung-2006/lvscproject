@@ -45,16 +45,19 @@ def runConvert(request):
             return_file(request)
         else:
             try:
+                print("entry1")
                 os.remove('./excel_to_word/alreadyPDF/result.pdf')
                 
                 files = glob.glob('./excel_to_word/processingData/*.*')
                 for file in files:
                     os.remove(file)
             except:
-                print('allen huang is stupid')
+                os.remove('./excel_to_word/alreadyPDF/result.pdf')
                 files = glob.glob('./excel_to_word/processingData/*.*')
+                print(files)
                 for file in files:
                     os.remove(file)
+
         return HttpResponse('return correct',status = 200)
     else:
         return HttpResponse("Invalid request", status=405)

@@ -33,17 +33,17 @@ document.addEventListener("DOMContentLoaded", () => {
     modal_fill_frame.forEach((element, index) => {
         element.addEventListener("click", (e) => {
             const bool = confirm("您確定要刪除檔案(資料夾)嗎？");
-            if(bool){
+            if (bool) {
                 modal_fill_frame[index].classList.add("frame_none");
                 upload_files[index].value = "";
                 setTimeout(() => {
                     upload_files[index].disabled = false;
                 }, 500);
             }
-            else{
+            else {
                 e.preventDefault();
             }
-            
+
         })
     });
 
@@ -64,14 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // execute part //
     fileform.addEventListener('submit', (event) => {
-        // pdfFrame.src = "";
+        pdfFrame.src = "";
         event.preventDefault();
         const getForm = new FormData(fileform);
-
         // single part 
         const ExcelData = upload_files[0].files[0];
-        if(ExcelData){
-            getForm.append('ExcelData',ExcelData);
+        if (ExcelData) {
+            getForm.append('ExcelData', ExcelData);
         }
 
         // folder part 
@@ -83,9 +82,14 @@ document.addEventListener("DOMContentLoaded", () => {
         for (let [key, value] of getForm.entries()) {
             console.log(key, value); // 這會顯示每個鍵和值
         }
-        console.log(upload_files[0].files.length,Folder.length)
-        if (Folder.length > 0 && upload_files[0].files.length > 0 ) {
+        console.log(upload_files[0].files.length, Folder.length)
+        if (Folder.length > 0 && upload_files[0].files.length > 0) {
             modal_update.classList.add("frame_none");
+            modal_fill_frame[0].classList.add("frame_none");
+            modal_fill_frame[1].classList.add("frame_none");
+            upload_files[0].disabled = false;
+            upload_files[1].disabled = false;
+            // pdfFrame.src = "";
             StateAction(1);
             fetch(URL, {
                 method: "POST",
@@ -104,13 +108,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 .catch(err => { console.error(err) });
         }
         else {
-            console.log(upload_files[0].files.length,Folder.length,"piyan")
+            console.log(upload_files[0].files.length, Folder.length)
             alert("請上傳完整的檔案(資料夾)")
         }
 
     })
 
     const FrameChange = (data, index) => {
+        console.log("data",data)
         modal_fill_frame[index].classList.remove("frame_none");
         upload_files[index].disabled = true;
         switch (index) {
@@ -128,11 +133,14 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(file_route)
             .then(res => {
                 if (!res.ok) {
-                    alert("something wrong!")
+                    alert("請上傳正確的圖片&資料夾")
+                    pdfFrame.src = '';
                 }
                 else {
                     pdfFrame.src = file_route;
                 }
+                upload_files[0].value = '';
+                upload_files[1].value = '';
             })
     }
     const StateAction = (state) => {

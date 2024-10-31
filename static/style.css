@@ -236,6 +236,7 @@ button:hover {
   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   color: #7E5FEC;
   transition: .25s;
+  text-align: center;
 }
 .modal_item:hover .icon,
 .modal_item:hover .icon_h2,
