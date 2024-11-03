@@ -15,7 +15,7 @@ from pypdf import PdfWriter
 import glob
 import os
 def Cov():    
-    try:
+    # try:
         #偵測資料夾xlsx檔案
         excel_files = glob.glob("./excel_to_word/processingData/*.xlsx")
         excel_file = excel_files[0]
@@ -261,7 +261,7 @@ def Cov():
                                     '會資':'會計事務 -資訊',
                                     '門市':'門市服務'
                                 }
-                                id_type = int(df_print.loc[i,'測驗類別'])
+                                id_type = int(df_print.loc[i,'測驗類別'])   
                                 test_type = test_type_lst[id_type]
                                 temstr = test_type[::-1]
                                 temstr = temstr[:2]
@@ -318,8 +318,7 @@ def Cov():
                             # ---------------------------------------------------------------------------------
                             elif '實貼身分證【正面】' in nowcommend:
                                 cell.text = ''
-                                class_id = '0'
-                                class_id += str(df_print.loc[i,'學號'])
+                                class_id = str(df_print.loc[i,'身分證號碼'])
                                 paragraph = cell.paragraphs[0]
                                 paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
                                 run = paragraph.add_run()
@@ -421,6 +420,6 @@ def Cov():
                 continue
             os.remove(file)
         return True
-    except:
-        return False
+    # except:
+    #     return False
     
